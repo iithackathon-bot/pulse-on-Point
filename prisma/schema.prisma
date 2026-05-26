@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  phone        String   @unique
+  password     String
+  refreshToken String?
+  medicalInfo  String?
+  createdAt    DateTime @default(now())
+
+  sosLogs      SOS[]
+}
+
+model SOS {
+  id          String   @id @default(uuid())
+  userId      String
+  latitude    Float
+  longitude   Float
+  severity    String
+  message     String
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
